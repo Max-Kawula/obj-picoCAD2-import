@@ -10,10 +10,12 @@ This only works on linux at the moment. I plan on releasing Windows build instru
 
 **libimagequant**\
 libimagequant is used for converting textures into 16 colors. You can install this using a package manager on most distros. I may make this an optional feature in favor of picoCAD's png importer.\
+
 debian or ubuntu
 ```Shell
 apt install libimagequant
 ```
+
 arch
 ```Shell
 pacman -s libimagequant
@@ -43,12 +45,12 @@ Posterization is done using libimagequant to quantize existing colors. I think i
 
 The shade palettes are just set to the base color so it's best to open the palette inside of picoCAD and select the 'robot' button to automatically assign the palette.
 
->[!WARNING] Please be aware that the input validation is not rigourous. Please verify your OBJ and PNG files before attempting to create saves. Additionally, outputted saves may crash picoCAD 2 as they are generated on the fly.
+> [!WARNING] Please be aware that the input validation is not rigourous. Please verify your OBJ and PNG files before attempting to create saves. Additionally, outputted saves may crash picoCAD 2 as they are generated on the fly.
 
 # Road map
 In no particular order.
 
-**Custom output path**\
+**Custom output path**
 
 **Select texture from available obj materials**\
 Currently it will select the first diffuse texture from the first material if available.
@@ -66,5 +68,5 @@ GUI would be nice.
 # LICENSE
 ---
 ## Third party licenses
-**tinyobjloader-c** - MIT License - https://github.com/syoyo/tinyobjloader-c\
-**cJSON** - MIT License - https://github.com/DaveGamble/cJSON\
+**tinyobjloader-c** - MIT License - https://github.com/syoyo/tinyobjloader-c \
+**cJSON** - MIT License - https://github.com/DaveGamble/cJSON \
