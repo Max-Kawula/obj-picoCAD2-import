@@ -15,6 +15,14 @@ int main(int argc, char **argv)
         return 1;
     }
 
+    /* check if we can write to the file */
+    FILE *output_file;
+    output_file = fopen("output.txt", "w");
+    if (output_file == NULL) {
+        fprintf(stderr, "ERROR: Failed to open output file. Exiting.\n");
+        return 1;
+    }
+
     const char *obj_file = argv[1];
     const char *png_file = NULL;
     if (argc == 3) {
@@ -75,14 +83,9 @@ int main(int argc, char **argv)
     cJSON_AddItemToObject(scene, "texture", json_texture);
 
     /* output final json string */
-    FILE *fptr;
     char *output_string = cJSON_Print(scene);
-    fptr = fopen("exports/output.txt", "w");
-    if (fptr == NULL) {
-        fprintf(stderr, "ERROR: Failed to write to file.\n");
-    }
-    fprintf(fptr, output_string);
-    fclose(fptr);
+    fprintf(output_file, output_string);
+    fclose(output_file);
 
     obj_destroy(obj_data);
     pico_mesh_destroy(&mesh);

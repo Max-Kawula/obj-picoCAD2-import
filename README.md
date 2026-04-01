@@ -9,7 +9,7 @@
 This only works on linux at the moment. I plan on releasing Windows build instructions / binaries down the line.
 
 **libimagequant**\
-libimagequant is used for converting textures into 16 colors. You can install this using a package manager on most distros. I may make this an optional feature in favor of picoCAD's png importer.\
+libimagequant is used for converting textures into 16 colors. You can install this using a package manager on most distros. I may make this an optional feature in favor of picoCAD's png importer.
 
 debian or ubuntu
 ```Shell
@@ -29,11 +29,11 @@ make
 
 # Usage
 ```Shell
-ObjPicoCAD2Import FILE.obj [TEXTURE.png]
-# outputs to exports/output.txt
+./ObjPicoCAD2Import FILE.obj [TEXTURE.png]
+# outputs to output.txt
 ```
 You pass the path to an OBJ file with an optional texture if you want to override.\
-The resulting file can be opened in PicoCAD 2 with no futher modifications.\
+The resulting file can be opened in PicoCAD 2 with no futher modifications.
 
 Currently, the best approach is to use single shapes in the OBJ file.\
 The code assumes there will be only one mesh and will read the entire vertex buffer.\
@@ -69,4 +69,4 @@ GUI would be nice.
 ---
 ## Third party licenses
 **tinyobjloader-c** - MIT License - https://github.com/syoyo/tinyobjloader-c \
-**cJSON** - MIT License - https://github.com/DaveGamble/cJSON \
+**cJSON** - MIT License - https://github.com/DaveGamble/cJSON
