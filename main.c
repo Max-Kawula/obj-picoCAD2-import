@@ -65,27 +65,32 @@ int main(int argc, char **argv)
     cJSON_AddItemToArray(obj_folder_children, base_object);
 
     /* Add the texture. First, we see if the obj had one.
-     * If the user supplies one as an argument we use that one instead. */
+     * If the user supplies one as an argument we use that one instead.
+     * If user does not supply one at all, we just use the default picoCAD 2 texture. */
     char *obj_texture_name = obj_texture_filename(obj_data);
+    cJSON *json_texture = NULL;
     pico_texture_t pico_texture = { 0 };
     if (png_file) {
+        printf("INFO: External texture located.\n");
         pico_texture = pico_texture_from_png(png_file);
-        cJSON_DeleteItemFromObject(scene, "texture");
     } else if (obj_texture_name) {
+        printf("INFO: Obj texture located.\n");
         pico_texture = pico_texture_from_png(obj_texture_name);
-        cJSON_DeleteItemFromObject(scene, "texture");
     } else {
         printf("INFO: No texture supplied. Using default texture.\n");
     }
 
-    /* add texture to JSON */
-    cJSON *json_texture = marshal_pico_texture(pico_texture);
-    cJSON_AddItemToObject(scene, "texture", json_texture);
+    if (pico_texture.pixels) {
+        cJSON_DeleteItemFromObject(scene, "texture");
+        json_texture = marshal_pico_texture(pico_texture);
+        cJSON_AddItemToObject(scene, "texture", json_texture);
+    }
 
     /* output final json string */
     char *output_string = cJSON_Print(scene);
     fprintf(output_file, output_string);
     fclose(output_file);
+    printf("INFO: File saved to: ./output.txt\n");
 
     obj_destroy(obj_data);
     pico_mesh_destroy(&mesh);
