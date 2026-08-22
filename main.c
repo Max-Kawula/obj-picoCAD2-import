@@ -170,6 +170,16 @@ cJSON *marshal_pico_texture(pico_texture_t p_texture)
     return texture;
 }
 
+/*
+ * Vertices are added to one buffer. Then faces are made by indexing the verts.
+ * This is sort of like OBJ except that each face contains the actual UVs.
+ *
+ * FIXME: Pico runs in left hand coordinate system. Flipping is easy,
+ * but appers to flip the winding order too. Great.
+ *
+ * Very oddly, tinyobj calls a group of indices (vert, uv, normal) a "face"
+ * You'll see obj_faces which is just an array of those index pairs
+ */
 pico_mesh_t obj_to_pico_mesh(obj_data_t obj, const char *name, int color)
 {
     pico_mesh_t p_mesh = { 0 };
@@ -194,10 +204,27 @@ pico_mesh_t obj_to_pico_mesh(obj_data_t obj, const char *name, int color)
         return p_mesh;
     }
 
-    /* TODO apply transforms here? */
-    memcpy(p_mesh.vertices, position, sizeof(float)*3 * vertex_count);
+    /*
+     * Coordinate system is different. Z gets flipped so it can survive
+     * export/import/export from default Blender OBJ export.
+     *     Y      Y
+     *     |      |
+     * X___|      |___X
+     *    /      /
+     *   Z      Z
+     * Pico     Blender(after obj export)
+     */
+    for (int i = 0; i < vertex_count; ++i) {
+        p_mesh.vertices[i*3 + 0] =  position[i*3 + 0];
+        p_mesh.vertices[i*3 + 1] =  position[i*3 + 1];
+        p_mesh.vertices[i*3 + 2] = -position[i*3 + 2];
+    }
 
-    /* for each in p_mesh.faces */
+    /* 
+     * Creating the faces below. Because we flipped the Z axis,
+     * the winding order is incorrect. We'll pull the last index
+     * from a face when copying over to reverse the winding order.
+     */
     int index_offset = 0;
     for (int i = 0; i < face_count; ++i) {
         pico_face_t *face = p_mesh.faces + i;
@@ -206,11 +233,13 @@ pico_mesh_t obj_to_pico_mesh(obj_data_t obj, const char *name, int color)
         face->uvs = face->uvs + index_offset*2;
         face->num_indices = face_vert_count[i];
         for (int j = 0; j < face->num_indices; ++j) {
-            tinyobj_vertex_index_t obj_face = obj_faces[j + index_offset];
+            tinyobj_vertex_index_t obj_face = obj_faces[(face->num_indices - j-1) + index_offset];
+            /*
+             * FIXME v_idx is an integer which is supposedly our index.
+             * how can i reverse it? (e.g. [0 1 2] becomes [2 1 0]
+             */
             face->vertex_ids[j] = obj_face.v_idx + 1; /* lua forced me to add one */
             /* uvs are inverted from obj format */
-            /* FIXME uvs appeared inverted on a recent test.
-             * am i screwing it up? y needs flip, x is fine? */
             face->uvs[j*2 + 0] = 0.0 + texcoords[obj_face.vt_idx*2 + 0];
             face->uvs[j*2 + 1] = 1.0 - texcoords[obj_face.vt_idx*2 + 1];
         }
