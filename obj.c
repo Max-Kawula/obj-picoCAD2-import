@@ -171,5 +171,3 @@ void obj_destroy(obj_data_t obj)
     tinyobj_shapes_free(obj.shapes, obj.num_shapes);
     tinyobj_materials_free(obj.materials, obj.num_materials);
 }
-    
-

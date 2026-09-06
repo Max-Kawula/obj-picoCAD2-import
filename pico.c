@@ -4,8 +4,7 @@
 #include <string.h>
 #include <stdio.h>
 
-pico_mesh_t pico_mesh_init(const char *name, int num_vertices, int num_faces,
-                            int num_indices)
+pico_mesh_t pico_mesh_init(const char *name, int num_vertices, int num_faces, int num_indices)
 {
     pico_mesh_t mesh = { 0 };
     if (name == NULL || num_vertices < 1 || num_faces < 1 || num_indices < 1) {
