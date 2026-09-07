@@ -1,17 +1,17 @@
-#define STBI_ONLY_PNG
-#define STBI_MAX_DIMENSIONS 8192
-#define STBI_NO_HDR
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-#define STB_IMAGE_RESIZE_IMPLEMENTATION
-#include "stb_image_resize2.h"
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
-#include "libimagequant.h"
 #include "pico.h"
-
 #include <stdio.h>
 
+#ifdef HAVE_IMAGEQUANT
+//#define STBI_ONLY_PNG
+//#define STBI_MAX_DIMENSIONS 8192
+//#define STBI_NO_HDR
+//#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+//#define STB_IMAGE_RESIZE_IMPLEMENTATION
+#include "stb_image_resize2.h"
+//#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
+#include "libimagequant.h"
 pico_texture_t pico_texture_from_png(const char *png_filename)
 {
     /* create the pico texture */
@@ -88,4 +88,9 @@ pico_texture_t pico_texture_from_png(const char *png_filename)
 
     return texture;
 }
-
+#else
+pico_texture_t pico_texture_from_png(const char *png_filename)
+{
+    return (pico_texture_t){0};
+}
+#endif

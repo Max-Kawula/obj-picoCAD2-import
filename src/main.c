@@ -1,3 +1,4 @@
+#include "raylib.h"
 #include "cJSON.h"
 #include "obj.h"
 #include "pico.h"
@@ -10,6 +11,10 @@ pico_mesh_t obj_to_pico_mesh(obj_data_t obj, const char *name, int color);
 
 int main(int argc, char **argv)
 {
+    /* just need to make sure it works */
+    InitWindow(800,600, "ObjPicoCAD2Import");
+    CloseWindow();
+
     if (argc < 2) {
         fprintf(stderr, "Usage: %s FILE.obj [TEXTURE.png]\n", argv[0]);
         return 1;
@@ -70,6 +75,8 @@ int main(int argc, char **argv)
     char *obj_texture_name = obj_texture_filename(obj_data);
     cJSON *json_texture = NULL;
     pico_texture_t pico_texture = { 0 };
+
+#ifdef HAVE_IMAGEQUANT
     if (png_file) {
         printf("INFO: External texture located.\n");
         pico_texture = pico_texture_from_png(png_file);
@@ -79,6 +86,9 @@ int main(int argc, char **argv)
     } else {
         printf("INFO: No texture supplied. Using default texture.\n");
     }
+#else
+    printf("INFO: No imagequant library detected. Using default texture.\n");
+#endif
 
     if (pico_texture.pixels) {
         cJSON_DeleteItemFromObject(scene, "texture");
