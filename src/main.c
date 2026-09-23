@@ -1,7 +1,11 @@
 #include "raylib.h"
 #include "cJSON.h"
 #include "obj.h"
+
 #include "pico.h"
+#include "gui.h"
+#include "dialogue.h"
+
 #include <stdio.h>
 #include <string.h>
 
@@ -13,7 +17,20 @@ int main(int argc, char **argv)
 {
     /* just need to make sure it works */
     InitWindow(800,600, "ObjPicoCAD2Import");
-    CloseWindow();
+
+    gui_init();
+    gui_set_font_size(24);
+    while (!WindowShouldClose()) {
+        gui_poll_input();
+        dialogue_file_select();
+        BeginDrawing();
+            ClearBackground(MAROON);
+            gui_render();
+        EndDrawing();
+    }
+    return 0;
+
+        
 
     if (argc < 2) {
         fprintf(stderr, "Usage: %s FILE.obj [TEXTURE.png]\n", argv[0]);
